@@ -1,0 +1,9 @@
+features in mind
+    Time table 
+    automatic attendance table and marks
+    admin menu (for adding and things)
+    grpahs showing performances
+    anonymous doubt clarification chat system
+    placements tab
+    placement chances detection bot
+

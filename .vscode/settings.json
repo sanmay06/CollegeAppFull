@@ -1,0 +1,15 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.onSave.enabled": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/config": true,
+        "**/Model/RoleEnum.java":true,
+        "**/Controller/GlobalExceptionHandler.java": true,
+        "**/Model/UserPrincipals.java":true,        
+    }
+}
