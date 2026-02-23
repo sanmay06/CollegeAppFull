@@ -5,6 +5,8 @@
 /start.txt
 
 /AI-part/venv
+/AI-part/test
 
+/frontend/.gitignore
 
 /backend/.gitignore
