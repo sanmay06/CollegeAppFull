@@ -1,0 +1,10 @@
+.expo
+.vscode
+/junk.txt
+/todo.txt
+/start.txt
+
+/AI-part/venv
+
+
+/backend/.gitignore

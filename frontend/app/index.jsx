@@ -1,162 +1,135 @@
-import { Text, View, StyleSheet, SafeAreaView, Pressable, TextInput  } from 'react-native'
-import React, { useContext, useState } from 'react'
+import { Text, View, StyleSheet, ScrollView, Image } from 'react-native'
+import React, { useContext, useState, useEffect } from 'react'
 import { ThemeContext } from '@/hooks/ThemeProvider'
 import Header from '@/components/ui/Header'
 import { useRouter } from 'expo-router'
 import api from '@/Axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import ScreenWrapper from '@/components/ui/ScreenWrapper'
+import Input from '@/components/ui/Input'
+import Button from '@/components/ui/Button'
 
 const Index = () => {
-  const { theme } = useContext(ThemeContext);
-
-  const styles = StyleSheet.create({  
-    mainContainer: {
-      backgroundColor: theme.background,
-      alignItems: 'center',
-      width: '100%',
-      height: '100%',
-    },
-    text: {
-      color: theme.text,
-      fontSize: 25,
-      textAlign: 'center',
-      textAlignVertical: 'center',
-    },
-    button:{
-      padding: 10,
-      borderRadius: 5,
-      borderWidth: 1,
-      borderColor: theme.text,
-    },
-    buttonContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-evenly',
-      height: '40%',
-      marginTop: 20,
-    }
-  })
-
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <ScreenWrapper style={{ paddingHorizontal: 0 }}>
       <Header />
-      <Login />
-    </SafeAreaView>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 16 }}>
+        <Login />
+      </ScrollView>
+    </ScreenWrapper>
   )
-
 }
 
 export default Index;
 
 const Login = () => {
-    const { theme } = useContext(ThemeContext);
-    const router = useRouter();
-    const [ form, setForm ] = useState({
-      "usn": "",
-      "password":""
-    });
-    const [ msg, setMsg ] = useState(""); 
-    const styles = StyleSheet.create({
-        mainContainer: {
-            backgroundColor: theme.background,
-            alignItems: 'center',
-            width: '100%',
-            height: '100%',
-            flexGap: 10,
-        },
-        msgText: {
-          color: 'red',
-          fontSize: 16,
-          marginTop: 10,
-        },        
-        text: {
-            color: theme.labelText,
-            fontSize: 25,
-            padding: 20,
-            textAlign: 'center',
-            textAlignVertical: 'center',
-        },
-        button: {
-            margin: 20,
-            padding: 10,
-            borderRadius: 5,
-            borderWidth: 1,
-            // color: theme.text,
-            backgroundColor: theme.button.background ,
-            color: theme.button.color,
-        },
-        inputText: {
-            color: theme.text,
-            fontSize: 25,
-            borderWidth: 1,
-            borderRadius: 10,
-            borderColor: theme.primary,
-            textAlign: 'center',
-            textAlignVertical: 'center',
-            height: 40,
-        },
-        buttonContainer: {
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-evenly',
-            height: '40%',
-            marginTop: 20,
-        },
-        buttonText: {
-          color: theme.text,
-            fontSize: 25,
-            textAlign: 'center',
-            textAlignVertical: 'center',
-            height: 40,
-        }
-    })
+  const { theme } = useContext(ThemeContext);
+  const router = useRouter();
+  const [form, setForm] = useState({
+    "usn": "",
+    "password": ""
+  });
+  const [msg, setMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-    const login = async () => {
-      api.post('/login', form)
+  const styles = StyleSheet.create({
+    mainContainer: {
+      alignItems: 'center',
+      width: '100%',
+      maxWidth: 400, // Limit width on large screens
+      alignSelf: 'center',
+      padding: 24,
+      backgroundColor: theme.card.background,
+      borderRadius: 16,
+      shadowColor: theme.card.shadow,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 12,
+      elevation: 5,
+      borderWidth: 1,
+      borderColor: theme.card.border,
+      marginBottom: 40,
+    },
+    title: {
+      color: theme.text,
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginBottom: 8,
+      textAlign: 'center',
+    },
+    subtitle: {
+      color: theme.textLight,
+      fontSize: 14,
+      marginBottom: 32,
+      textAlign: 'center',
+    },
+    logo: {
+      width: 80,
+      height: 80,
+      marginBottom: 24,
+      resizeMode: 'contain',
+    }
+  })
+
+  const login = async () => {
+    setIsLoading(true);
+    setMsg("");
+
+    api.post('/login', form)
       .then((response) => {
-        // console.log(response);
-        if(response.data.msg === "Login successful") {
+        setIsLoading(false);
+        if (response.data.msg === "Login successful") {
           const role = response.data.role;
-          setMsg("Sucess");
-          console.log("response", response.data);
+          console.log("response: ", response.data);
+          setMsg(""); // Clear error on success
           AsyncStorage.setItem("token", response.data.token);
           AsyncStorage.setItem("role", role);
           AsyncStorage.setItem("usn", form.usn);
-          AsyncStorage.setItem("branch",response.data.branch);
-          // api.get('/test')
-          // .then((response) => console.log("get response",response));
-          router.push(role === 'STUDENT'? "/Student/": role === "TEACHER"? "/Teacher/": "/Faculty/")
+          router.push(role === 'STUDENT' ? "/Student/" : role === "EMPLOYEE" ? "/Employee/" : "/")
         }
         else
-          setMsg("Invalid username or password");        
+          setMsg("Invalid username or password");
       })
-      .catch((error) => console.log(error));
-    }
+      .catch((error) => {
+        setIsLoading(false);
+        setMsg("An error occurred. Please try again.");
+        console.log(error);
+      });
+  }
 
-    return (
-        <View style={styles.mainContainer}>
-            <Text style={styles.text}>Enter ID:</Text>
-            <TextInput 
-                value={form.usn}
-                onChangeText={(text) => setForm({...form, usn: text})}
-                style = {styles.inputText}
-            />
-            <Text style={styles.text}>Enter password:</Text>
-            <TextInput 
-                value={form.password}
-                onChangeText={(text) => setForm({...form, password: text})}
-                style = {styles.inputText}
-            />
-            <Text style = {styles.msgText}>{msg}</Text>
-            <Pressable
-                style={styles.button}
-                disabled={form.usn === "" || form.password === ""}
-                onPress={() => login()}
-            >
-              <Text style = {styles.buttonText}>
-                Submit
-              </Text>
-            </Pressable>
-        </View>
-    )
+  return (
+    <View style={styles.mainContainer}>
+      <Image
+        source={require('@/assets/images/BIT logo.png')}
+        style={styles.logo}
+      />
+      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.subtitle}>Sign in to access your dashboard</Text>
+
+      <Input
+        label="User ID (USN)"
+        placeholder="Enter your USN"
+        value={form.usn}
+        onChangeText={(text) => setForm({ ...form, usn: text })}
+        autoCapitalize="characters"
+      />
+
+      <Input
+        label="Password"
+        placeholder="Enter your password"
+        value={form.password}
+        onChangeText={(text) => setForm({ ...form, password: text })}
+        secureTextEntry
+        error={msg}
+      />
+
+      <Button
+        title="Sign In"
+        onPress={login}
+        loading={isLoading}
+        disabled={form.usn === "" || form.password === ""}
+        style={{ marginTop: 16, width: '100%' }}
+      />
+    </View>
+  )
 }

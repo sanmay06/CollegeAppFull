@@ -22,8 +22,8 @@ public class timeTableService {
         return l;
     }
 
-    public List<TimeTable> getAllTTTeachers(Map<String, String> m) {
-        List<TimeTable> l = repo.findAllByTeacherAndBranch(m.get("name"), m.get("branch"));
+    public List<TimeTable> getAllTTEmployees(Map<String, String> m) {
+        List<TimeTable> l = repo.findAllByEmployeeAndBranch(m.get("name"), m.get("branch"));
         return l;
     }
 

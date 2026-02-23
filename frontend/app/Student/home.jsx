@@ -1,24 +1,39 @@
-import { Text, View, StyleSheet, SafeAreaView } from 'react-native'
 import React, { useContext } from 'react'
-import Header from '@/components/ui/Header'
+import { Text, View, StyleSheet } from 'react-native'
 import { ThemeContext } from '@/hooks/ThemeProvider'
+import Header from '@/components/ui/Header'
+import ScreenWrapper from '@/components/ui/ScreenWrapper'
 
+// Placeholder dashboard for students
 const StudentLogin = () => {
-  const { theme } = useContext(ThemeContext);
+    const { theme } = useContext(ThemeContext);
 
     const styles = StyleSheet.create({
-        mainContainer: {
-            backgroundColor: theme.background,
+        container: {
             alignItems: 'center',
-            width: '100%',
-            height: '100%',
+            padding: 20,
         },
+        welcomeText: {
+            fontSize: 22,
+            fontWeight: 'bold',
+            color: theme.text,
+            marginBottom: 8,
+        },
+        subText: {
+            fontSize: 14,
+            color: theme.textLight,
+        }
     })
 
     return (
-        <SafeAreaView style={styles.mainContainer}>
+        <ScreenWrapper style={{ paddingHorizontal: 0 }}>
             <Header />
-        </SafeAreaView>
+            <View style={styles.container}>
+                <Text style={styles.welcomeText}>Student Dashboard</Text>
+                <Text style={styles.subText}>Welcome back to your portal.</Text>
+                {/* Add Student specific menu items here later */}
+            </View>
+        </ScreenWrapper>
     )
 }
 

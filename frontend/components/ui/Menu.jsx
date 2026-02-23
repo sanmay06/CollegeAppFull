@@ -1,4 +1,3 @@
-// components/ui/Menu.jsx
 import React, { useContext } from "react";
 import {
   StyleSheet,
@@ -15,139 +14,118 @@ import { ThemeContext } from "@/hooks/ThemeProvider";
 export default function Menu(props) {
   const router = useRouter();
   const { theme } = useContext(ThemeContext);
-  const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
-  const isPortrait = screenHeight >= screenWidth;
-  const path = props.path;
-  const isWeb = screenWidth > 768;
-  const cardSize = isWeb
-    ? 140
-    : isPortrait
-    ? screenWidth * 0.35
-    : screenHeight * 0.28;
+  const { width: screenWidth } = Dimensions.get("window");
 
-  const cardRadius = 18;
+  // simplified responsive logic
+  const isWeb = screenWidth > 768;
+  const numColumns = isWeb ? 4 : 2;
+  const gap = 16;
+  const padding = 16;
+
+  // Calculate item width based on available space
+  const availableWidth = screenWidth - (padding * 2) - (gap * (numColumns - 1));
+  const itemWidth = isWeb ? 160 : availableWidth / numColumns;
 
   const renderItem = ({ item }) => (
-    <View style={styles(theme, cardSize, cardRadius, isWeb).itemContainer}>
+    <View style={{ width: itemWidth, marginBottom: gap, marginRight: (item.id % numColumns === 0) ? 0 : gap }}>
       <TouchableOpacity
-        style={styles(theme, cardSize, cardRadius, isWeb).card}
-        onPress={() => router.push(path + "/" + item.link)}
-        activeOpacity={0.8}
+        style={styles(theme).card}
+        onPress={() => router.push(props.path + item.link)}
+        activeOpacity={0.7}
       >
-        <View style={styles(theme, cardSize, cardRadius, isWeb).iconContainer}>
+        <View style={styles(theme).iconContainer}>
           {item.icon === "MaterialCommunityIcons" && (
             <MaterialCommunityIcons
               name={item.iconName}
-              size={isWeb ? 36 : cardSize * 0.25}
+              size={32}
               color={theme.primary}
             />
           )}
           {item.icon === "Ionicons" && (
             <Ionicons
               name={item.iconName}
-              size={isWeb ? 36 : cardSize * 0.25}
+              size={32}
               color={theme.primary}
             />
           )}
         </View>
-      </TouchableOpacity>
 
-      <View style={styles(theme, cardSize, cardRadius, isWeb).titleContainer}>
-        <Text
-          style={styles(theme, cardSize, cardRadius, isWeb).title}
-          numberOfLines={2}
-        >
-          {item.title}
-        </Text>
-        {item.subtitle && (
-          <Text
-            style={styles(theme, cardSize, cardRadius, isWeb).subtitle}
-            numberOfLines={1}
-          >
-            {item.subtitle}
+        <View style={styles(theme).textContainer}>
+          <Text style={styles(theme).title} numberOfLines={2}>
+            {item.title}
           </Text>
-        )}
-      </View>
+          {item.subtitle && (
+            <Text style={styles(theme).subtitle} numberOfLines={1}>
+              {item.subtitle}
+            </Text>
+          )}
+        </View>
+      </TouchableOpacity>
     </View>
   );
 
   return (
-    <View style={styles(theme, cardSize, cardRadius, isWeb).container}>
-      <FlatList
-        style={styles(theme, cardSize, cardRadius, isWeb).list}
-        contentContainerStyle={
-          styles(theme, cardSize, cardRadius, isWeb).listContainer
-        }
-        data={props.items}
-        horizontal={false}
-        numColumns={2}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
+    <FlatList
+      style={styles(theme).container}
+      contentContainerStyle={styles(theme).listContent}
+      data={props.items}
+      horizontal={false}
+      numColumns={numColumns}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={renderItem}
+      showsVerticalScrollIndicator={false}
+      key={numColumns}
+    />
   );
 }
 
-const styles = (theme, cardSize, cardRadius, isWeb) =>
+const styles = (theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.background,
-      paddingTop: 20,
+      width: '100%',
     },
-    list: {
-      backgroundColor: theme.background,
-      paddingHorizontal: isWeb ? 20 : 10,
-    },
-    listContainer: {
-      alignItems: "center",
-      paddingVertical: 10,
-      maxWidth: isWeb ? 900 : "100%",
-      alignSelf: "center",
-    },
-    itemContainer: {
-      margin: isWeb ? 14 : 10,
-      alignItems: "center",
-      width: isWeb ? 160 : cardSize + 16,
+    listContent: {
+      padding: 16,
+      // alignItems: 'center', // Centering might break specific grid alignment logic, let's keep default
     },
     card: {
       backgroundColor: theme.card.background,
-      width: cardSize,
-      height: cardSize,
-      borderRadius: cardRadius,
+      borderRadius: 16,
+      padding: 16,
       alignItems: "center",
       justifyContent: "center",
+      aspectRatio: 1, // Square cards
+      width: '100%',
+      // Shadows
+      shadowColor: theme.card.shadow,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4,
       borderWidth: 1,
-      borderColor:
-        theme.background === "#121212"
-          ? "rgba(129, 199, 132, 0.25)"
-          : "rgba(76, 175, 80, 0.12)",
+      borderColor: theme.card.border,
     },
     iconContainer: {
-      padding: isWeb ? 10 : 12,
-      borderRadius: 14,
-      backgroundColor:
-        theme.background === "#121212"
-          ? "rgba(129, 199, 132, 0.15)"
-          : "rgba(76, 175, 80, 0.08)",
+      padding: 12,
+      borderRadius: 50,
+      backgroundColor: theme.primary + '15', // 15% opacity
+      marginBottom: 12,
     },
-    titleContainer: {
-      marginTop: 10,
-      alignItems: "center",
-      paddingHorizontal: 4,
+    textContainer: {
+      alignItems: 'center',
+      width: '100%',
     },
     title: {
-      fontSize: isWeb ? 14 : 13,
+      fontSize: 14,
       fontWeight: "600",
       color: theme.text,
       textAlign: "center",
     },
     subtitle: {
-      fontSize: 11,
-      color: theme.labelText,
+      fontSize: 12,
+      color: theme.textLight,
       textAlign: "center",
-      marginTop: 2,
-      opacity: 0.8,
+      marginTop: 4,
     },
   });

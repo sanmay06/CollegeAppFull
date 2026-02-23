@@ -1,101 +1,74 @@
 export const Colors = {
   light: {
-    background: '#F9FAFB',             // soft white-gray background
-    primary: '#4CAF50',                // medium green (muted but strong)
-    secondary: '#81C784',              // soft minty green
-    text: '#263238',                   // deep gray-blue
-    labelText: '#546E7A',              // desaturated blue-gray
+    background: '#F8FAFC',             // Slate-50 - Very light cool gray
+    primary: '#4F46E5',                // Indigo-600 - Modern, vibrant ease
+    primaryDark: '#4338CA',            // Indigo-700 - Hover state
+    secondary: '#64748B',              // Slate-500 - Secondary actions
+    text: '#1E293B',                   // Slate-800 - High contrast text
+    textLight: '#64748B',              // Slate-500 - Low contrast text
+    labelText: '#475569',              // Slate-600
+    
     card: {
       background: '#FFFFFF',
-      color: '#263238',
+      border: '#E2E8F0',               // Slate-200
+      shadow: '#CBD5E1',               // Slate-300
     },
-    headingText: '#1B5E20',            // dark rich green
-    subHeadingText: '#4E6C50',
-    border: '#E0E0E0',
-    niceBackground: '#EDF7ED',         // mint-washed greenish white
+
+    input: {
+      background: '#FFFFFF',
+      border: '#CBD5E1',               // Slate-300
+      placeholder: '#94A3B8',          // Slate-400
+      focus: '#4F46E5',                // Indigo-600
+    },
+
     button: {
-      background: '#66BB6A',           // leafy green
-      color: '#FFFFFF',
-    },
-    buttonActive: {
-      background: '#388E3C',
-      color: '#FFFFFF',
-    },
-    accent: '#FF7043',                 // soft orange
-    success: '#43A047',
-    warning: '#FFA000',
-    info: '#29B6F6',
-    error: '#E53935',
-    disabled: '#CFD8DC',
-    placeholderText: '#90A4AE',
-    divider: '#ECEFF1',
-    overlay: 'rgba(0, 0, 0, 0.04)',
-
-    buttonSecondary: {
-      background: '#E8F5E9',
-      color: '#2E7D32',
-    },
-    buttonDanger: {
-      background: '#FFEBEE',
-      color: '#C62828',
+      background: '#4F46E5',           // Indigo-600
+      text: '#FFFFFF',
+      disabled: '#94A3B8',             // Slate-400
     },
 
-    cardSecondary: {
-      background: '#F1F8E9',
-      color: '#33691E',
-    },
-    cardHighlight: {
-      background: '#DCEDC8',
-      color: '#2E7D32',
-    },
+    success: '#10B981',                // Emerald-500
+    warning: '#F59E0B',                // Amber-500
+    error: '#EF4444',                  // Red-500
+    info: '#3B82F6',                   // Blue-500
+    
+    border: '#E2E8F0',                 // Slate-200
+    overlay: 'rgba(15, 23, 42, 0.4)',  // Slate-900 with opacity
   },
   dark: {
-    background: '#121212',
-    primary: '#81C784',
-    secondary: '#A5D6A7',
-    text: '#ECEFF1',
-    labelText: '#B0BEC5',
+    background: '#0F172A',             // Slate-900
+    primary: '#6366F1',                // Indigo-500
+    primaryDark: '#4F46E5',            // Indigo-600
+    secondary: '#94A3B8',              // Slate-400
+    text: '#F1F5F9',                   // Slate-100
+    textLight: '#94A3B8',              // Slate-400
+    labelText: '#CBD5E1',              // Slate-300
+
     card: {
-      background: '#1E1E1E',
-      color: '#ECEFF1',
+      background: '#1E293B',           // Slate-800
+      border: '#334155',               // Slate-700
+      shadow: '#020617',               // Slate-950
     },
-    headingText: '#B9F6CA',
-    subHeadingText: '#A7FFEB',
-    border: '#37474F',
-    niceBackground: '#1A2B1A',
+
+    input: {
+      background: '#1E293B',           // Slate-800
+      border: '#475569',               // Slate-600
+      placeholder: '#64748B',          // Slate-500
+      focus: '#6366F1',                // Indigo-500
+    },
+
     button: {
-      background: '#2E7D32',
-      color: '#E8F5E9',
+      background: '#6366F1',           // Indigo-500
+      text: '#FFFFFF',
+      disabled: '#475569',             // Slate-600
     },
-    buttonActive: {
-      background: '#66BB6A',
-      color: '#1B5E20',
-    },
-    accent: '#FF8A65',
-    success: '#00E676',
-    warning: '#FFD600',
-    info: '#4FC3F7',
-    error: '#EF5350',
-    disabled: '#546E7A',
-    placeholderText: '#90A4AE',
-    divider: '#2E3C42',
-    overlay: 'rgba(0,0,0,0.5)',
-    buttonSecondary: {
-      background: '#2E4D2E',
-      color: '#C8E6C9',
-    },
-    buttonDanger: {
-      background: '#3D2B2B',
-      color: '#FF8A80',
-    },
-    cardSecondary: {
-      background: '#1C2C1C',
-      color: '#A5D6A7',
-    },
-    cardHighlight: {
-      background: '#2A3A2A',
-      color: '#C8E6C9',
-    },
+
+    success: '#34D399',                // Emerald-400
+    warning: '#FBBF24',                // Amber-400
+    error: '#F87171',                  // Red-400
+    info: '#60A5FA',                   // Blue-400
+
+    border: '#334155',                 // Slate-700
+    overlay: 'rgba(0, 0, 0, 0.6)',
   },
-  
 };

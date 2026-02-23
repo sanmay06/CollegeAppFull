@@ -2,11 +2,9 @@ package com.clgapp.backend.service;
 
 import org.springframework.stereotype.Service;
 
-import com.clgapp.backend.Model.Admin;
-import com.clgapp.backend.Model.Quota;
 import com.clgapp.backend.Model.RoleEnum;
 import com.clgapp.backend.Model.Student;
-import com.clgapp.backend.Model.Teacher;
+import com.clgapp.backend.Model.Employee;
 import com.clgapp.backend.Model.Users;
 import com.clgapp.backend.Model.returnUser;
 import com.clgapp.backend.Model.user;
@@ -26,9 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.clgapp.backend.Repository.studentRepo;
-import com.clgapp.backend.Repository.teacherRepo;
-import com.clgapp.backend.Repository.QuotaRepo;
-import com.clgapp.backend.Repository.adminRepo;
+import com.clgapp.backend.Repository.employeeRepo;
 
 @Service
 public class UserService {
@@ -40,16 +36,10 @@ public class UserService {
     private userRepo repo;
 
     @Autowired
-    private QuotaRepo qrepo;
-
-    @Autowired
     private studentRepo studentRepo;
 
     @Autowired
-    private teacherRepo teacherRepo;
-
-    @Autowired
-    private adminRepo adminRepo;
+    private employeeRepo employeeRepo;
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
@@ -70,6 +60,18 @@ public class UserService {
         return m;
     }
 
+    public String register(Users user) {
+        
+        user.setPassword(encoder.encode(user.getPassword()));
+
+        try {
+            repo.save(user);
+        } catch (Exception e) {
+            return "Error Occured: " + e;
+        }
+        return "sucess";
+    }
+
     public String createStudent(Map<String, String> m) {
         Users user = repo.findById(m.get("usn")).orElse(new Users());
         user.setUsn(m.get("usn"));
@@ -78,18 +80,13 @@ public class UserService {
         user.setPassword(encoder.encode(m.get("password")));
         user.setPhone(m.get("phone"));
 
-        Quota q = qrepo.findById(m.get("quota")).orElse(null);
-        
-        if(q == null) 
-            return "Please enter the correct Quota Name";
-
         Student student;
         if (m.containsKey("id") && m.get("id") != null && !m.get("id").isEmpty())
             student = studentRepo.findById(Long.parseLong(m.get("id"))).orElse(new Student());
         else
             student = new Student();
 
-        student.setQuotaName(q);
+        student.setQuotaName(m.get("quota"));
         student.setName(m.get("name")); 
         student.setAge(Integer.parseInt(m.get("age")));
         student.setDob(Date.valueOf(LocalDate.parse(m.get("dob"), DateTimeFormatter.ISO_DATE)));
@@ -98,6 +95,7 @@ public class UserService {
         student.setSemester(Integer.parseInt(m.get("semester")));
         student.setYear(Integer.parseInt(m.get("year")));
         student.setBacklogs(Integer.parseInt(m.get("backlogs")));
+        student.setSection(m.get("section"));
         student.setUser(user);
 
         try {
@@ -110,77 +108,46 @@ public class UserService {
         return "Done";
     }
 
-    public String createTeacher(Map<String, String> m) {
+    public String createEmployee(Map<String, String> m) {
         Users user = repo.findById(m.get("usn")).orElse(new Users());
         user.setUsn(m.get("usn"));
-        user.setRole(RoleEnum.TEACHER);
+        user.setRole(RoleEnum.EMPLOYEE);
         user.setEmail(m.get("email"));
         user.setPassword(encoder.encode(m.get("password")));
         user.setPhone(m.get("phone"));
 
-        Teacher teach;
+        Employee emp;
         if (m.containsKey("id") && m.get("id") != null && !m.get("id").isEmpty()) 
-            teach = teacherRepo.findById(Long.parseLong(m.get("id"))).orElse(new Teacher());
+            emp = employeeRepo.findById(Long.parseLong(m.get("id"))).orElse(new Employee());
         else  
-            teach = new Teacher();
+            emp = new Employee();
 
-        teach.setName(m.get("name"));
-        teach.setAge(Integer.parseInt(m.get("age")));
-        teach.setDob(Date.valueOf(LocalDate.parse(m.get("dob"), DateTimeFormatter.ISO_DATE)));
-        teach.setJoinDate(Date.valueOf(LocalDate.parse(m.get("joinDate"), DateTimeFormatter.ISO_DATE)));
-        teach.setSalary(new BigInteger(m.get("salary")));
-        teach.setUser(user);
-
-        try {
-            repo.save(user);
-            teacherRepo.save(teach);
-        } catch (Exception e) {
-            return "Error creating teacher: " + e.getMessage();
-        }
-        return "Done";
-    }
-
-    public String createAdmin(Map<String, String> m) {
-        Users user = repo.findById(m.get("usn")).orElse(new Users());
-        user.setUsn(m.get("usn"));
-        user.setRole(RoleEnum.ADMIN);
-        user.setEmail(m.get("email"));
-        user.setPassword(encoder.encode(m.get("password")));
-        user.setPhone(m.get("phone"));
-
-        Admin admin;
-        if (m.containsKey("id") && m.get("id") != null && !m.get("id").isEmpty()) 
-            admin = adminRepo.findById(Long.parseLong(m.get("id"))).orElse(new Admin());
-        else
-            admin = new Admin();
-
-        admin.setName(m.get("name"));
-        admin.setAge(Integer.parseInt(m.get("age")));
-        admin.setDob(Date.valueOf(LocalDate.parse(m.get("dob"), DateTimeFormatter.ISO_DATE)));
-        admin.setJoinDate(Date.valueOf(LocalDate.parse(m.get("joinDate"), DateTimeFormatter.ISO_DATE)));
-        admin.setSalary(new BigInteger(m.get("salary")));
-        admin.setUser(user);
+        emp.setName(m.get("name"));
+        emp.setAge(Integer.parseInt(m.get("age")));
+        emp.setDob(Date.valueOf(LocalDate.parse(m.get("dob"), DateTimeFormatter.ISO_DATE)));
+        emp.setJoinDate(Date.valueOf(LocalDate.parse(m.get("joinDate"), DateTimeFormatter.ISO_DATE)));
+        emp.setSalary(new BigInteger(m.get("salary")));
+        emp.setUser(user);
 
         try {
             repo.save(user);
-            adminRepo.save(admin);
+            employeeRepo.save(emp);
         } catch (Exception e) {
-            return "Error creating admin: " + e.getMessage();
+            return "Error creating employee: " + e.getMessage();
         }
         return "Done";
     }
-
 
     public returnUser getStudents() {
         List<Student> list = studentRepo.findAll();
     
         List<String> head = Arrays.asList(
-            "USN", "Name", "Email", "Phone", "Branch", "Age", "Year", "CGPA", 
+            "USN", "Name", "Email", "Phone", "Branch", "Age", "Year", "Section", "CGPA", 
             "Semester", "Backlogs", "Proctor", "Quota", "Fees Status"
         );
     
         List<String> keys = Arrays.asList(
-            "USN", "Name", "Email", "Phone", "Branch", "Age", "Year", "CGPA", 
+            "USN", "Name", "Email", "Phone", "Branch", "Age", "Year", "Section", "CGPA", 
             "Semester", "Backlogs", "Proctor", "Quota", "FeesStatus"
         );
     
@@ -197,21 +164,22 @@ public class UserService {
                 stud.getDob(),
                 stud.getJoinDate(),
                 null,
+                stud.getSection(),
                 stud.getCgpa(),
                 stud.getYear(),
                 stud.getSemester(),
                 stud.getBacklogs(),
-                stud.getQuotaName().getName(),
+                stud.getQuotaName(),
                 stud.isFeesStatus(),
-                stud.getProctor().getName()
+                stud.getProctor() != null ? stud.getProctor().getName() : ""
             );
             l.add(u);
         }
         return new returnUser(head, keys, l);
     }
     
-    public returnUser getTeachers() {
-        List<Teacher> list = teacherRepo.findAll();
+    public returnUser getEmployees() {
+        List<Employee> list = employeeRepo.findAll();
     
         List<String> head = Arrays.asList(
             "USN", "Email", "Phone", "Branch", "Name", "Age", 
@@ -224,7 +192,7 @@ public class UserService {
         );
     
         List<user> l = new ArrayList<>();
-        for (Teacher us : list) {
+        for (Employee us : list) {
             user u = new user(
                 us.getUser().getUsn(),
                 us.getUser().getEmail(),
@@ -236,45 +204,7 @@ public class UserService {
                 us.getDob(),
                 us.getJoinDate(),
                 us.getSalary(),
-                0.0f,
-                0,
-                0,
-                0,
                 null,
-                false,
-                null
-            );
-            l.add(u);
-        }
-        return new returnUser(head, keys, l);
-    }
-    
-    public returnUser getAdmins() {
-        List<Admin> list = adminRepo.findAll();
-    
-        List<String> head = Arrays.asList(
-            "USN", "Email", "Phone", "Branch", "Name", "Age", 
-            "DOB", "Join Date", "Salary"
-        );
-    
-        List<String> keys = Arrays.asList(
-            "usn", "email", "phone", "branch", "name", "age", 
-            "dob", "joinDate", "salary"
-        );
-    
-        List<user> l = new ArrayList<>();
-        for (Admin us : list) {
-            user u = new user(
-                us.getUser().getUsn(),
-                us.getUser().getEmail(),
-                us.getUser().getPhone(),
-                us.getBranch(),
-                us.getId(),
-                us.getName(),
-                us.getAge(),
-                us.getDob(),
-                us.getJoinDate(),
-                us.getSalary(),
                 0.0f,
                 0,
                 0,
@@ -288,31 +218,30 @@ public class UserService {
         return new returnUser(head, keys, l);
     }
 
-    public String UpdateTeachers(List<Map<String, String>> list) {
+    public String UpdateEmployees(List<Map<String, String>> list) {
         try {
             for (Map<String, String> m : list) {
-                Teacher teacher = teacherRepo.findById(Long.parseLong(m.get("id"))).orElse(null);
-                if (teacher == null) continue;
+                Employee employee = employeeRepo.findById(Long.parseLong(m.get("id"))).orElse(null);
+                if (employee == null) continue;
     
-                Users user = teacher.getUser();
+                Users user = employee.getUser();
                 user.setEmail(m.get("email"));
                 user.setPhone(m.get("phone"));
     
-                teacher.setName(m.get("name"));
-                teacher.setAge(Integer.parseInt(m.get("age")));
-                teacher.setDob(Date.valueOf(LocalDate.parse(m.get("dob"), DateTimeFormatter.ISO_DATE)));
-                teacher.setJoinDate(Date.valueOf(LocalDate.parse(m.get("joinDate"), DateTimeFormatter.ISO_DATE)));
-                teacher.setSalary(new BigInteger(m.get("salary")));
+                employee.setName(m.get("name"));
+                employee.setAge(Integer.parseInt(m.get("age")));
+                employee.setDob(Date.valueOf(LocalDate.parse(m.get("dob"), DateTimeFormatter.ISO_DATE)));
+                employee.setJoinDate(Date.valueOf(LocalDate.parse(m.get("joinDate"), DateTimeFormatter.ISO_DATE)));
+                employee.setSalary(new BigInteger(m.get("salary")));
     
                 repo.save(user);
-                teacherRepo.save(teacher);
+                employeeRepo.save(employee);
             }
         } catch (Exception e) {
-            return "Error updating teachers: " + e.getMessage();
+            return "Error updating employees: " + e.getMessage();
         }
         return "Done";
     }
-    
     
     public String UpdateStudents(List<Map<String, String>> list) {
         try {
@@ -332,6 +261,7 @@ public class UserService {
                 student.setYear(Integer.parseInt(m.get("year")));
                 student.setSemester(Integer.parseInt(m.get("semester")));
                 student.setBacklogs(Integer.parseInt(m.get("backlogs")));
+                student.setSection(m.get("section"));
                 student.setFeesStatus(Boolean.parseBoolean(m.get("feesStatus")));
                 // TODO: update proctor and quota if needed
     
@@ -340,32 +270,6 @@ public class UserService {
             }
         } catch (Exception e) {
             return "Error updating students: " + e.getMessage();
-        }
-        return "Done";
-    }
-    
-
-    public String UpdateAdmin(List<Map<String, String>> list) {
-        try {
-            for (Map<String, String> m : list) {
-                Admin admin = adminRepo.findById(Long.parseLong(m.get("id"))).orElse(null);
-                if (admin == null) continue;
-    
-                Users user = admin.getUser();
-                user.setEmail(m.get("email"));
-                user.setPhone(m.get("phone"));
-    
-                admin.setName(m.get("name"));
-                admin.setAge(Integer.parseInt(m.get("age")));
-                admin.setDob(Date.valueOf(LocalDate.parse(m.get("dob"), DateTimeFormatter.ISO_DATE)));
-                admin.setJoinDate(Date.valueOf(LocalDate.parse(m.get("joinDate"), DateTimeFormatter.ISO_DATE)));
-                admin.setSalary(new BigInteger(m.get("salary")));
-    
-                repo.save(user);
-                adminRepo.save(admin);
-            }
-        } catch (Exception e) {
-            return "Error updating admins: " + e.getMessage();
         }
         return "Done";
     }

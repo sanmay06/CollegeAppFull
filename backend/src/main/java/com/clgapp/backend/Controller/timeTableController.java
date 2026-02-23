@@ -30,9 +30,9 @@ public class timeTableController {
         return service.getAllTTStudents(m);
     }
     
-    @PostMapping("/teacher")
-    public List<TimeTable> retrieveForTeachers(@RequestBody Map<String, String> m) {
-        return service.getAllTTTeachers(m);
+    @PostMapping("/employee")
+    public List<TimeTable> retrieveForEmployees(@RequestBody Map<String, String> m) {
+        return service.getAllTTEmployees(m);
     }
     
     @PostMapping("/create")

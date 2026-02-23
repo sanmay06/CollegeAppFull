@@ -1,5 +1,7 @@
 package com.clgapp.backend.Model;
+import com.clgapp.backend.Model.Employee;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +25,7 @@ public class TimeTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private String day;
 
     @ManyToOne
@@ -32,17 +35,21 @@ public class TimeTable {
     })
     private Subjects subject;
 
+    @Column(nullable = false)
     private String st;
 
+    @Column(nullable = false)
     private String et;
 
+    @Column(nullable = false)
     private String section;
 
+    @Column(nullable = false)
     private String semester;
 
     @ManyToOne()
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
     @ManyToOne
     @JoinColumn(name = "branchname")

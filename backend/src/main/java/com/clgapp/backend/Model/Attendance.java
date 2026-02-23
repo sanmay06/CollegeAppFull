@@ -1,4 +1,5 @@
 package com.clgapp.backend.Model;
+import com.clgapp.backend.Model.Employee;
 
 import java.util.Date;
 
@@ -32,6 +33,11 @@ public class Attendance {
     private Student student;
 
     @ManyToOne(optional = false)
-    private Teacher teacher;
+    private Employee employee;
 
+    @Column(nullable = false)
+    private String status;
+
+    @Column(nullable = false)
+    private String section;
 }

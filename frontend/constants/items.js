@@ -27,11 +27,4 @@ export default items = [
         icon: "Ionicons",
         iconName: "person-add",
     }, 
-    {
-        id:5,
-        title: "Update Quotas",
-        link: "/UpdateQuotas",
-        icon: "MaterialCommunityIcons",
-        iconName: "school",
-    }
 ]

@@ -16,7 +16,7 @@ import jakarta.transaction.Transactional;
 public interface timeTableRepo extends JpaRepository<TimeTable, Integer> {
 
     @Query(
-        "SELECT t FROM TimeTable t WHERE t.section = :sec AND t.semester = :sem AND t.branch = :branch"
+        "SELECT t FROM TimeTable t WHERE t.section = :sec AND t.semester = :sem AND t.branch.BranchName = :branch"
     )
     List<TimeTable> findAllBySemesterAndSection(
         @Param("sec") String section, 
@@ -25,9 +25,9 @@ public interface timeTableRepo extends JpaRepository<TimeTable, Integer> {
     );
 
     @Query(
-        "SELECT t FROM TimeTable t WHERE t.teacher.name = :name AND t.branch = :branch"
+        "SELECT t FROM TimeTable t WHERE t.employee.name = :name AND t.branch = :branch"
     )
-    List<TimeTable> findAllByTeacherAndBranch(
+    List<TimeTable> findAllByEmployeeAndBranch(
         @Param("name") String name, 
         @Param("branch") String branch
     );

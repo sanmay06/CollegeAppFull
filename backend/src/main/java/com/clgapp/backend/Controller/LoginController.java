@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -35,19 +37,20 @@ public class LoginController {
         return userService.Login(user);
     }
     
+    @PostMapping("/register")
+    public String register(@RequestBody Users user) {
+        return userService.register(user);
+    }
+    
+
     @PostMapping("/user/create/student")
     public String createStudent(@RequestBody Map<String, String> m) {
         return userService.createStudent(m);
     }
 
-    @PostMapping("/user/create/teacher")
-    public String createTeacher(@RequestBody Map<String, String> m) {
-        return userService.createTeacher(m);
-    }
-
-    @PostMapping("/user/create/admin")
-    public String createAdmin(@RequestBody Map<String, String> m) {
-        return userService.createAdmin(m);
+    @PostMapping("/user/create/employee")
+    public String createEmployee(@RequestBody Map<String, String> m) {
+        return userService.createEmployee(m);
     }
 
     @GetMapping("user/student")
@@ -55,29 +58,21 @@ public class LoginController {
         return userService.getStudents();
     }
 
-    @GetMapping("user/teacher")
-    public returnUser getAllTeachers() {
-        return userService.getTeachers();
+    @GetMapping("user/employee")
+    public returnUser getAllEmployees() {
+        return userService.getEmployees();
     }
-
-    @GetMapping("user/admin")
-    public returnUser getAllAdmins() {
-        return userService.getAdmins();
-    } 
 
     @PutMapping("user/student/update")
     public String updatestudent(@RequestBody List<Map<String, String>> list) {
         return userService.UpdateStudents(list);
     }
 
-    @PutMapping("user/teacher/update")
-    public String updateTeacher(@RequestBody List<Map<String, String>> list) {
-        return userService.UpdateTeachers(list);
+    @PutMapping("user/employee/update")
+    public String updateEmployee(@RequestBody List<Map<String, String>> list) {
+        return userService.UpdateEmployees(list);
     }
 
-    @PutMapping("user/admin/update")
-    public String updateAdmin(@RequestBody List<Map<String, String>> list) {
-        return userService.UpdateAdmin(list);
-    }
+
 
 }

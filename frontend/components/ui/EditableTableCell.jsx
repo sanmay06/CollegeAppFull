@@ -22,31 +22,31 @@ const updateCascadingCellsWithPush = (currentEndTime, currentIndex, cells, curre
   const currentEndMins = timeToMinutes(currentEndTime);
   const currentStartMins = timeToMinutes(currentStartTime);
   const expansionAmount = currentEndMins - timeToMinutes(cells[currentIndex].et);
-  
+
   // If we're shrinking, just update the immediate next cell
   if (expansionAmount <= 0) {
     return updateNextCellOnly(currentEndTime, currentIndex, cells, currentStartTime);
   }
-  
+
   // If we're expanding, push all subsequent cells forward
   const updatedCells = [...cells];
-  
+
   // Find all cells that come after the current cell chronologically
   const subsequentCells = cells
     .map((cell, idx) => ({ ...cell, originalIndex: idx }))
     .filter((cell, idx) => idx !== currentIndex && timeToMinutes(cell.st) >= currentStartMins)
     .sort((a, b) => timeToMinutes(a.st) - timeToMinutes(b.st));
-  
+
   // Push each subsequent cell forward by the expansion amount
   subsequentCells.forEach((cell) => {
     const cellIndex = cell.originalIndex;
     const currentCellStartMins = timeToMinutes(cell.st);
     const currentCellEndMins = timeToMinutes(cell.et);
-    
+
     // Calculate new times
     const newStartMins = currentCellStartMins + expansionAmount;
     const newEndMins = currentCellEndMins + expansionAmount;
-    
+
     // Check if pushing would exceed timetable bounds
     if (newEndMins <= MAX_TIMETABLE_END) {
       updatedCells[cellIndex] = {
@@ -56,7 +56,7 @@ const updateCascadingCellsWithPush = (currentEndTime, currentIndex, cells, curre
       };
     }
   });
-  
+
   return updatedCells;
 };
 
@@ -64,22 +64,22 @@ const updateCascadingCellsWithPush = (currentEndTime, currentIndex, cells, curre
 const updateNextCellOnly = (currentEndTime, currentIndex, cells, currentStartTime) => {
   const otherCells = cells.map((cell, idx) => ({ ...cell, originalIndex: idx }))
     .filter((_, idx) => idx !== currentIndex);
-  
+
   const nextCells = otherCells
     .filter(cell => timeToMinutes(cell.st) >= timeToMinutes(currentStartTime))
     .sort((a, b) => timeToMinutes(a.st) - timeToMinutes(b.st));
-  
+
   if (nextCells.length === 0) return cells;
-  
+
   const nextCell = nextCells[0];
   const nextCellIndex = nextCell.originalIndex;
-  
+
   const updatedCells = [...cells];
   updatedCells[nextCellIndex] = {
     ...updatedCells[nextCellIndex],
     st: currentEndTime
   };
-  
+
   return updatedCells;
 };
 
@@ -198,8 +198,8 @@ const ResizableTableCell = ({ data, day, index, setCells, dayCells, setDelete })
       fontWeight: 'bold',
     },
   });
-  
-  
+
+
 
   // ENHANCED: Pan gesture with cell pushing logic
   const panGesture = Gesture.Pan()
@@ -209,7 +209,7 @@ const ResizableTableCell = ({ data, day, index, setCells, dayCells, setDelete })
     .onUpdate((event) => {
       const newWidth = startWidth.value + event.translationX;
       const snapped = Math.max(
-        TIME_BLOCK_WIDTH, 
+        TIME_BLOCK_WIDTH,
         Math.round(newWidth / TIME_BLOCK_WIDTH) * TIME_BLOCK_WIDTH
       );
       width.value = snapped;
@@ -223,26 +223,26 @@ const ResizableTableCell = ({ data, day, index, setCells, dayCells, setDelete })
       const calculateMaxEndTime = () => {
         // Check if expansion would push cells beyond timetable end
         const expansionAmount = newEndMins - endMins;
-        
+
         if (expansionAmount <= 0) {
           // Shrinking - no special limits needed
           return Math.max(newEndMins, startMins + MIN_DURATION);
         }
-        
+
         // Expanding - check if subsequent cells can be pushed
         const subsequentCells = dayCells
           .filter((_, idx) => idx !== index && timeToMinutes(dayCells[idx].st) >= startMins)
           .sort((a, b) => timeToMinutes(a.st) - timeToMinutes(b.st));
-        
+
         if (subsequentCells.length === 0) {
           // No subsequent cells - allow expansion up to max duration or timetable end
           return Math.min(startMins + MAX_DURATION, MAX_TIMETABLE_END);
         }
-        
+
         // Check if pushing all subsequent cells would exceed bounds
         const lastSubsequentCell = subsequentCells[subsequentCells.length - 1];
         const lastCellNewEndMins = timeToMinutes(lastSubsequentCell.et) + expansionAmount;
-        
+
         if (lastCellNewEndMins <= MAX_TIMETABLE_END) {
           // Safe to expand and push
           return Math.min(newEndMins, startMins + MAX_DURATION);
@@ -269,21 +269,21 @@ const ResizableTableCell = ({ data, day, index, setCells, dayCells, setDelete })
 
       runOnJS(setCells)((prev) => {
         const currentDayUpdated = [...prev[day]];
-        
+
         // Update current cell
-        currentDayUpdated[index] = { 
-          ...currentDayUpdated[index], 
-          et: finalEndTime 
+        currentDayUpdated[index] = {
+          ...currentDayUpdated[index],
+          et: finalEndTime
         };
-        
+
         // ENHANCED: Use the new cascading function with pushing
         const cascadedCells = updateCascadingCellsWithPush(
-          finalEndTime, 
-          index, 
-          currentDayUpdated, 
+          finalEndTime,
+          index,
+          currentDayUpdated,
           data.st
         );
-        
+
         return { ...prev, [day]: cascadedCells };
       });
 
@@ -317,21 +317,21 @@ const ResizableTableCell = ({ data, day, index, setCells, dayCells, setDelete })
       const currentDayCells = [...prev[day]];
       const deletedCell = currentDayCells[index];
 
-      if(data.id && setDelete)
+      if (data.id && setDelete)
         setDelete(prev => [...prev, data.id]);
-  
+
       const deletedStartMins = timeToMinutes(deletedCell.st);
       const deletedEndMins = timeToMinutes(deletedCell.et);
       const duration = deletedEndMins - deletedStartMins;
-  
+
       // Remove the current cell
       currentDayCells.splice(index, 1);
-  
+
       // Shift subsequent cells back by the duration
       const updatedCells = currentDayCells.map((cell, idx) => {
         const cellStartMins = timeToMinutes(cell.st);
         const cellEndMins = timeToMinutes(cell.et);
-  
+
         // Only shift cells that come after the deleted cell
         if (cellStartMins >= deletedEndMins) {
           const newStart = Math.max(cellStartMins - duration, deletedStartMins); // prevent overlap
@@ -344,11 +344,11 @@ const ResizableTableCell = ({ data, day, index, setCells, dayCells, setDelete })
         }
         return cell;
       });
-  
+
       return { ...prev, [day]: updatedCells };
     });
   };
-  
+
 
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -360,13 +360,13 @@ const ResizableTableCell = ({ data, day, index, setCells, dayCells, setDelete })
     setCells((prev) => {
       const updated = [...prev[day]];
       updated[index] = { ...updated[index], [field]: value };
-      
+
       // If end time is manually changed, cascade with pushing
       if (field === 'et') {
         const cascadedCells = updateCascadingCellsWithPush(value, index, updated, data.st);
         return { ...prev, [day]: cascadedCells };
       }
-      
+
       return { ...prev, [day]: updated };
     });
   };
@@ -388,12 +388,12 @@ const ResizableTableCell = ({ data, day, index, setCells, dayCells, setDelete })
             value={data.subjectCode}
             onChangeText={(t) => handleChange('subjectCode', t)}
           />
-           <TextInput
+          <TextInput
             style={styles.subjectInput}
-            placeholder="Teacher Name"
+            placeholder="Employee Name"
             placeholderTextColor={`${theme.text}60`}
-            value={data.teacherName}
-            onChangeText={(t) => handleChange('teacherName', t)}
+            value={data.employeeName}
+            onChangeText={(t) => handleChange('employeeName', t)}
           />
           <TextInput
             style={styles.subjectInput}
@@ -409,7 +409,7 @@ const ResizableTableCell = ({ data, day, index, setCells, dayCells, setDelete })
           </View>
         </View>
       </View>
-      
+
       <GestureDetector gesture={panGesture}>
         <Animated.View style={styles.resizer}>
           <View style={styles.resizerHandle} />

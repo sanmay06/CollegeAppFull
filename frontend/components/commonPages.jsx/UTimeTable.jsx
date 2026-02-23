@@ -10,7 +10,6 @@ import {
   Platform,
 } from 'react-native';
 import { ThemeContext } from '@/hooks/ThemeProvider';
-import Header from '@/components/ui/Header';
 import api from '@/Axios';
 import ResizableTableCell from '@/components/ui/EditableTableCell';
 import { timeToMinutes, minutesToTime } from '@/utils/timeUtils';
@@ -22,14 +21,14 @@ const TABLE_CELL_HEIGHT = 80;
 const DAY_LABEL_WIDTH = 120; // Increased for better day label display
 
 const Utt = () => {
-    const { theme } = useContext(ThemeContext);
-    const { width, height } = Dimensions.get('window');
-    const isPortrait = height > width;
-    const size = isPortrait ? width * 0.15 : height * 0.15;
-    const [msg, setMsg] = useState('');
-    const [dets, setDets] = useState({ sem: '', sec: '', branch: '' });
-    const [ deleteId, setDelete] = useState([]);
-    const [Cells, setCells] = useState({});
+  const { theme } = useContext(ThemeContext);
+  const { width, height } = Dimensions.get('window');
+  const isPortrait = height > width;
+  const size = isPortrait ? width * 0.15 : height * 0.15;
+  const [msg, setMsg] = useState('');
+  const [dets, setDets] = useState({ sem: '', sec: '', branch: '' });
+  const [deleteId, setDelete] = useState([]);
+  const [Cells, setCells] = useState({});
 
   const DayMap = {
     mon: 'Monday',
@@ -41,7 +40,7 @@ const Utt = () => {
   };
 
   const fetchTimetable = async () => {
-    if (dets.sem.trim() === '' || dets.sec.trim() === '') {setMsg("Please enter semester and section"); return;}
+    if (dets.sem.trim() === '' || dets.sec.trim() === '') { setMsg("Please enter semester and section"); return; }
     try {
       const branch = await AsyncStorage.getItem('branch');
       api.post('timetable/student', {
@@ -49,23 +48,23 @@ const Utt = () => {
         sem: dets.sem,
         branch: branch,
       })
-      .then((response) => {
-        const cell = {};
-        response.data.forEach((item) => {
-          const day = item.day.toLowerCase().slice(0, 3);
-          if (!cell[day]) cell[day] = [];
-          cell[day].push({
-            subjectCode: item.subjectCode,
-            st: item.st,
-            et: item.et,
-            id: item.id,
-            teacherName: item.teacherName,
-            subjectName: item.subjectName,
+        .then((response) => {
+          const cell = {};
+          response.data.forEach((item) => {
+            const day = item.day.toLowerCase().slice(0, 3);
+            if (!cell[day]) cell[day] = [];
+            cell[day].push({
+              subjectCode: item.subjectCode,
+              st: item.st,
+              et: item.et,
+              id: item.id,
+              employeeName: item.employee ? item.employee.name : "",
+              subjectName: item.subjectName,
+            })
           })
+          setCells(cell);
         })
-        setCells(cell);
-      })
-    }catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
@@ -75,8 +74,8 @@ const Utt = () => {
     try {
       console.log('Cells:', Cells);
       const branch = await AsyncStorage.getItem('branch');
-      api.delete('timetable/deleteId', {data:deleteId}).then((response) => console.log(response.data === "Done" ?"deleted": "Error deleting cells"));
-      const fromatCeels = Object.entries(Cells).flatMap( ([key, items]) => 
+      api.delete('timetable/deleteId', { data: deleteId }).then((response) => console.log(response.data === "Done" ? "deleted" : "Error deleting cells"));
+      const fromatCeels = Object.entries(Cells).flatMap(([key, items]) =>
         items.map((item) => ({
           ...item,
           day: DayMap[key],
@@ -101,10 +100,10 @@ const Utt = () => {
     setCells((prev) => {
       const prevDayCells = prev[day] || [];
       const lastCell = prevDayCells[prevDayCells.length - 1];
-  
+
       const defaultStart = lastCell?.et || '9:00';
       const defaultEnd = minutesToTime(timeToMinutes(defaultStart) + 30);
-  
+
       return {
         ...prev,
         [day]: [
@@ -359,11 +358,11 @@ const Utt = () => {
 
   const renderDayRow = (day, label) => {
     const hasClasses = Cells[day]?.length > 0;
-  
+
     return (
       <View style={styles.tableRow}>
         <Text style={styles.dayRowLabel}>{label}</Text>
-  
+
         {hasClasses ? (
           Cells[day].map((cell, index) => (
             <ResizableTableCell
@@ -381,7 +380,7 @@ const Utt = () => {
             <Text style={styles.emptyStateText}>—</Text>
           </View>
         )}
-  
+
         <Pressable
           style={({ pressed }) => [
             styles.addButton,
@@ -398,11 +397,11 @@ const Utt = () => {
       </View>
     );
   };
-  
+
 
   return (
-    <ScrollView 
-      style={{ backgroundColor: theme.niceBackground || theme.background }} 
+    <ScrollView
+      style={{ backgroundColor: theme.niceBackground || theme.background }}
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
     >
@@ -442,8 +441,8 @@ const Utt = () => {
         </Pressable>
       </View>
 
-      <ScrollView 
-        horizontal 
+      <ScrollView
+        horizontal
         // showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}
         bounces={false}
@@ -486,7 +485,7 @@ const Utt = () => {
         </View>
       </ScrollView>
 
-      <Pressable 
+      <Pressable
         style={({ pressed }) => [
           styles.saveButton,
           pressed && styles.saveButtonPressed

@@ -1,10 +1,7 @@
 package com.clgapp.backend.Model;
 
-import com.clgapp.backend.Model.Employee;
-
+import java.math.BigInteger;
 import java.util.Date;
-
-import org.hibernate.annotations.ColumnDefault;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Student {
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,13 +28,6 @@ public class Student {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne
-    private Users user;
-
-    @ManyToOne
-    @JoinColumn(name = "Branch_name")
-    private Branches Branch;
-
     @Column(nullable = false)
     private int age;
 
@@ -45,32 +35,17 @@ public class Student {
     private Date dob;
 
     @Column(nullable = false)
-    private float cgpa;
-
-    @Column(nullable = false)
     private Date joinDate;
 
     @Column(nullable = false)
-    private int semester;
+    private BigInteger Salary;
 
-    @Column(nullable = false)
-    private int year;
-
-    @Column(nullable = false)
-    private int backlogs;
-
-    @Column(nullable = false)
-    private String section;
-
-    @Column(nullable = false)
-    private String quotaName;
-
-    @Column(nullable = false)
-    @ColumnDefault("false")
-    private boolean feesStatus;
+    @OneToOne
+    @JoinColumn(name = "usn")
+    private Users user;
 
     @ManyToOne
-    @JoinColumn(name = "employee_name")
-    private Employee proctor;
-
+    @JoinColumn(name = "Branch_name")
+    private Branches branch;
+    
 }

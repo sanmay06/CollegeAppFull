@@ -7,9 +7,11 @@
         "**/.hg": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "**/config": true,
+        // "**/config": true,
         "**/Model/RoleEnum.java":true,
         "**/Controller/GlobalExceptionHandler.java": true,
         "**/Model/UserPrincipals.java":true,        
-    }
+    },
+    "java.compile.nullAnalysis.mode": "automatic",
+    "git.ignoreLimitWarning": true
 }

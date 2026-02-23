@@ -22,7 +22,7 @@ const TABLE_CELL_HEIGHT = 80;
 const DAY_LABEL_WIDTH = 120; // Increased for better day label display
 
 const CTT = () => {
-    const { theme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const { width, height } = Dimensions.get('window');
   const isPortrait = height > width;
   const size = isPortrait ? width * 0.15 : height * 0.15;

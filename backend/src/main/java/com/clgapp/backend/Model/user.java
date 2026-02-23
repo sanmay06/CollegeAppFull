@@ -31,6 +31,8 @@ public class user {
     private Date JoinDate;
 
     private BigInteger Salary;
+    
+    private String Section;
 
     private float CGPA;
 
