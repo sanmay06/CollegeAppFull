@@ -7,5 +7,5 @@ import com.clgapp.backend.Model.Student;
 
 @Repository
 public interface studentRepo extends JpaRepository<Student, Long> {
-    
+    java.util.List<Student> findBySemesterAndSection(int semester, String section);
 }

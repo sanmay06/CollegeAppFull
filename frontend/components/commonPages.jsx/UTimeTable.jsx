@@ -214,7 +214,7 @@ const Utt = () => {
     tableHeader: {
       flexDirection: 'row',
       alignItems: 'center',
-      background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`,
+      backgroundColor: theme.primary, // Fixed: RN doesn't support linear-gradient string in background
       borderBottomWidth: 3,
       borderBottomColor: theme.secondary,
     },
@@ -292,13 +292,13 @@ const Utt = () => {
       }),
     },
     addButtonPressed: {
-      backgroundColor: theme.buttonActive.background,
+      backgroundColor: theme.buttonActive?.background || theme.primaryDark,
       transform: [{ scale: 0.95 }],
     },
     addButtonText: {
       fontWeight: '900',
       fontSize: 28,
-      color: theme.button.color,
+      color: theme.button?.color || theme.button?.text || '#FFFFFF',
       textShadowColor: `${theme.primary}30`,
       textShadowOffset: { width: 0, height: 1 },
       textShadowRadius: 2,

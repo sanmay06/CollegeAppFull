@@ -7,7 +7,10 @@ export const Colors = {
     text: '#1E293B',                   // Slate-800 - High contrast text
     textLight: '#64748B',              // Slate-500 - Low contrast text
     labelText: '#475569',              // Slate-600
-    
+    headingText: '#1E293B',            // Slate-800
+    subHeadingText: '#64748B',         // Slate-500
+    niceBackground: '#F1F5F9',         // Slate-100
+
     card: {
       background: '#FFFFFF',
       border: '#E2E8F0',               // Slate-200
@@ -24,14 +27,19 @@ export const Colors = {
     button: {
       background: '#4F46E5',           // Indigo-600
       text: '#FFFFFF',
+      color: '#FFFFFF',                // Alias for text
       disabled: '#94A3B8',             // Slate-400
+    },
+
+    buttonActive: {
+      background: '#4338CA',           // Indigo-700
     },
 
     success: '#10B981',                // Emerald-500
     warning: '#F59E0B',                // Amber-500
     error: '#EF4444',                  // Red-500
     info: '#3B82F6',                   // Blue-500
-    
+
     border: '#E2E8F0',                 // Slate-200
     overlay: 'rgba(15, 23, 42, 0.4)',  // Slate-900 with opacity
   },
@@ -43,6 +51,9 @@ export const Colors = {
     text: '#F1F5F9',                   // Slate-100
     textLight: '#94A3B8',              // Slate-400
     labelText: '#CBD5E1',              // Slate-300
+    headingText: '#F8FAFC',            // Slate-50
+    subHeadingText: '#94A3B8',         // Slate-400
+    niceBackground: '#1E293B',         // Slate-800
 
     card: {
       background: '#1E293B',           // Slate-800
@@ -60,7 +71,12 @@ export const Colors = {
     button: {
       background: '#6366F1',           // Indigo-500
       text: '#FFFFFF',
+      color: '#FFFFFF',                // Alias for text
       disabled: '#475569',             // Slate-600
+    },
+
+    buttonActive: {
+      background: '#4F46E5',           // Indigo-600
     },
 
     success: '#34D399',                // Emerald-400

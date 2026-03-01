@@ -51,7 +51,7 @@ const CTT = () => {
     try {
       console.log('Cells:', Cells);
       const branch = await AsyncStorage.getItem('branch');
-      const fromatCeels = Object.entries(Cells).flatMap( ([key, items]) => 
+      const fromatCeels = Object.entries(Cells).flatMap(([key, items]) =>
         items.map((item) => ({
           ...item,
           day: DayMap[key],
@@ -76,10 +76,10 @@ const CTT = () => {
     setCells((prev) => {
       const prevDayCells = prev[day] || [];
       const lastCell = prevDayCells[prevDayCells.length - 1];
-  
+
       const defaultStart = lastCell?.et || '9:00';
       const defaultEnd = minutesToTime(timeToMinutes(defaultStart) + 30);
-  
+
       return {
         ...prev,
         [day]: [
@@ -190,7 +190,7 @@ const CTT = () => {
     tableHeader: {
       flexDirection: 'row',
       alignItems: 'center',
-      background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`,
+      backgroundColor: theme.primary, // Fixed: RN doesn't support linear-gradient string in background
       borderBottomWidth: 3,
       borderBottomColor: theme.secondary,
     },
@@ -268,13 +268,13 @@ const CTT = () => {
       }),
     },
     addButtonPressed: {
-      backgroundColor: theme.buttonActive.background,
+      backgroundColor: theme.buttonActive?.background || theme.primaryDark,
       transform: [{ scale: 0.95 }],
     },
     addButtonText: {
       fontWeight: '900',
       fontSize: 28,
-      color: theme.button.color,
+      color: theme.button?.color || theme.button?.text || '#FFFFFF',
       textShadowColor: `${theme.primary}30`,
       textShadowOffset: { width: 0, height: 1 },
       textShadowRadius: 2,
@@ -334,11 +334,11 @@ const CTT = () => {
 
   const renderDayRow = (day, label) => {
     const hasClasses = Cells[day]?.length > 0;
-  
+
     return (
       <View style={styles.tableRow}>
         <Text style={styles.dayRowLabel}>{label}</Text>
-  
+
         {hasClasses ? (
           Cells[day].map((cell, index) => (
             <ResizableTableCell
@@ -355,7 +355,7 @@ const CTT = () => {
             <Text style={styles.emptyStateText}>—</Text>
           </View>
         )}
-  
+
         <Pressable
           style={({ pressed }) => [
             styles.addButton,
@@ -372,11 +372,11 @@ const CTT = () => {
       </View>
     );
   };
-  
+
 
   return (
-    <ScrollView 
-      style={{ backgroundColor: theme.niceBackground || theme.background }} 
+    <ScrollView
+      style={{ backgroundColor: theme.niceBackground || theme.background }}
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
     >
@@ -408,8 +408,8 @@ const CTT = () => {
         </View>
       </View>
 
-      <ScrollView 
-        horizontal 
+      <ScrollView
+        horizontal
         // showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}
         bounces={false}
@@ -452,7 +452,7 @@ const CTT = () => {
         </View>
       </ScrollView>
 
-      <Pressable 
+      <Pressable
         style={({ pressed }) => [
           styles.saveButton,
           pressed && styles.saveButtonPressed

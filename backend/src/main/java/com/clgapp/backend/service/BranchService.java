@@ -36,5 +36,9 @@ public class BranchService {
         }
         return "Done";
     }
+
+    public List<Branches> getAllBranches() {
+        return repo.findAll();
+    }
     
 }

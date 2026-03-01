@@ -17,5 +17,5 @@ public interface subjectsRepo extends JpaRepository<Subjects, subjectId>{
         "SELECT s FROM Subjects s WHERE s.subjectid.code = :code"
     )
     List<Subjects> findByCode(@Param("code") String subjCode);
-    
+    java.util.Optional<Subjects> findBySubjectName(String subjectName);
 }
